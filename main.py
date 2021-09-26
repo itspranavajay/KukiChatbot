@@ -11,9 +11,9 @@ TOKEN = os.environ.get("TOKEN", None)
 
 
 kuki = Client(
-      bot_token=TOKEN,
       api_id=API_ID,
       api_hash=API_HASH,
+      bot_token=TOKEN,
 )
 
 @kuki.on_message(
