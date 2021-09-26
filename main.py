@@ -5,6 +5,7 @@ from pyrogram import filters, Client
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import requests
 import os
+import re
 
 API_ID = os.environ.get("API_ID", None) 
 API_HASH = os.environ.get("API_HASH", None) 
@@ -27,9 +28,14 @@ kuki = Client(
     group=2,
 )
 async def kukiai(client: Client, message: Message):
-  if message.reply_to_message:
-  if not message.reply_to_message.from_user.id = BOT_ID
-      return
+  if not message.reply_to_message:
+        return
+    try:
+        pro = message.reply_to_message.from_user.id
+    except:
+        return
+    if pro != BOT_ID:
+        return
   msg = message.text
   chat_id = message.chat.id
 
