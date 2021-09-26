@@ -8,6 +8,10 @@
             "description": "telegram bot token here",
             "required": true
         },
+        "BOT_ID": {
+            "description": "telegram bot token here",
+            "required": true
+        },
         "API_ID": {
             "description": "telegram api id here",
             "required": true
