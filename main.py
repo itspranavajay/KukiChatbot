@@ -28,13 +28,9 @@ kuki = Client(
 )
 async def kukiai(client: Client, message: Message):
   if not message.reply_to_message:
-        return
-    try:
-        pro = message.reply_to_message.from_user.id
-    except:
-        return
-    if pro != BOT_ID:
-        return
+      return
+  message.reply_to_message.from_user.id = BOT_ID
+      return
   msg = message.text
   chat_id = message.chat.id
 
