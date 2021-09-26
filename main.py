@@ -9,6 +9,7 @@ import os
 API_ID = os.environ.get("API_ID", None) 
 API_HASH = os.environ.get("API_HASH", None) 
 TOKEN = os.environ.get("TOKEN", None) 
+BOT_ID = os.environ.get("BOT_ID", None)
 
 
 kuki = Client(
@@ -26,6 +27,14 @@ kuki = Client(
     group=2,
 )
 async def kukiai(client: Client, message: Message):
+  if not message.reply_to_message:
+        return
+    try:
+        pro = message.reply_to_message.from_user.id
+    except:
+        return
+    if pro != BOT_ID:
+        return
   msg = message.text
   chat_id = message.chat.id
 
