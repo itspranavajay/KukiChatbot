@@ -11,6 +11,7 @@ TOKEN = os.environ.get("TOKEN", None)
 
 
 kuki = Client(
+      "KukiBot",
       api_id=API_ID,
       api_hash=API_HASH,
       bot_token=TOKEN,
