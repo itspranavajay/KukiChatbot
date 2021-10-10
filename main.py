@@ -11,6 +11,7 @@ API_ID = os.environ.get("API_ID", None)
 API_HASH = os.environ.get("API_HASH", None) 
 TOKEN = os.environ.get("TOKEN", None) 
 BOT_ID = os.environ.get("BOT_ID", None)
+KUKI_KEY = os.environ.get("KUKI_KEY", None)
 
 
 kuki = Client(
@@ -31,7 +32,7 @@ async def kukiai(client: Client, message: Message):
   msg = message.text
   chat_id = message.chat.id
 
-  Kuki =   requests.get(f"https://kuki-api.tk/api/botname/owner/message={msg}").json()
+  Kuki =   requests.get(f"https://kuki-api.tk/api/apikey={KUKI_KEY}botname/owner/message={msg}").json()
 
   moezilla = f"{Kuki['reply']}"
       
