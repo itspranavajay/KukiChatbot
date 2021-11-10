@@ -8,10 +8,6 @@
             "description": "telegram bot token here",
             "required": true
         },
-        "KUKI_KEY": {
-            "description": "Contact https://t.me/kukiaisupport for free Api Key.",
-            "required": true
-        },
         "API_ID": {
             "description": "telegram api id here",
             "required": true
