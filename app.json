@@ -1,11 +1,15 @@
 {
     "name": "KukiChatBot",
-    "description": "Hello, I am Lycia An Intelligent ChatBot. If You Are Feeling Lonely, You can Always Come to me and Chat With Me!",
+    "description": "Hello, I am KUKI An Intelligent ChatBot. If You Are Feeling Lonely, You can Always Come to me and Chat With Me!",
     "logo": "https://telegra.ph/file/a54ed27b0dc3fc3e439fd.jpg",
     "repository": "https://github.com/MoeZilla/kukichatbot",
     "env": {
-        "TOKEN": {
+        "BOT_TOKEN": {
             "description": "telegram bot token here",
+            "required": true
+        },
+        "MONGO_URL": {
+            "description": "mongo db url here",
             "required": true
         },
         "API_ID": {
