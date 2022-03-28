@@ -8,6 +8,10 @@
             "description": "telegram bot token here",
             "required": true
         },
+        "KUKI_API": {
+            "description": "join @metavoidsupport",
+            "required": true
+        },
         "MONGO_URL": {
             "description": "mongo db url here",
             "required": true
