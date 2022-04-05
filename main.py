@@ -109,7 +109,7 @@ async def addchat(_, message):
                 "You are not admin"
             )
     is_kuki = kuki.find_one({"chat_id": message.chat.id})
-    if not kuki:
+    if not is_kuki:
         toggle.insert_one({"chat_id": message.chat.id})
         await message.reply_text(f"✅ | Successfully\nKuki Chatbot of this Group is set to @{message.chat.username}\n Requested by [{message.from_user.first_name}](tg://user?id={message.from_user.id})\n© @MetaVoid")
     else:
