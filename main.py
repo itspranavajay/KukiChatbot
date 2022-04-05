@@ -8,7 +8,7 @@ import re
 
 API_ID = os.environ.get("API_ID", None) 
 API_HASH = os.environ.get("API_HASH", None) 
-BOT_TOKEN = os.environ.get("TOKEN", None) 
+BOT_TOKEN = os.environ.get("BOT_TOKEN", None) 
 KUKI_API = os.environ.get("KUKI_API", None) 
 MONGO_URL = os.environ.get("MONGO_URL", None)
 
@@ -243,6 +243,7 @@ async def help(client, message):
         
     else:    
         await message.reply_text("/start - Start The Bot\n/chat - Send a message to this bot\n/setupchat - Active Kuki Chatbot In Group\n/removechat - Disable Kuki Chatbot In Group")
+
 
 
 
