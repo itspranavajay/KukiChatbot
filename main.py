@@ -30,69 +30,6 @@ async def is_admins(chat_id: int):
 
 
 @bot.on_message(
-    filters.command("token", prefixes=["/", ".", "?", "-"])
-    & filters.private)
-async def token(client, message):   
-    leveldb = MongoClient(MONGO_URL)    
-    toggle = leveldb["myFirstDatabase"]["jsons"]
-    user = leveldb["Kukiapi"]["user"]
-    key = leveldb["Kukiapi"]["api"]
-    chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    chars1="1234564890"
-    gen1 = random.choice(chars)
-    gen2 = random.choice(chars)
-    gen3 = random.choice(chars1)
-    gen4 = random.choice(chars)
-    gen5 = random.choice(chars)
-    gen6 = random.choice(chars)
-    gen7 = random.choice(chars1)
-    gen8 = random.choice(chars)
-    gen9 = random.choice(chars)
-    gen10 = random.choice(chars1)
-    word = f"{message.from_user.id}-KUKI{gen1}{gen2}{gen3}{gen4}{gen5}{gen6}{gen7}{gen8}{gen9}{gen10}"    
-    is_user = user.find_one({"user_id": message.from_user.id})
-    if not is_user:
-        toggle.insert_one({"ID": word, "data": word})
-        user.insert_one({"user_id": message.from_user.id, "API": word})
-        await message.reply_text(f"Your Kuki API: `{word}` Do not give this token to anyone else!\n Join @MetaVoidSupport")
-    else:
-        KukiAPI = is_user["API"]
-        await message.reply_text(f"Your Kuki API: `{KukiAPI}` Do not give this token to anyone else!\n Join @MetaVoidSupport")
- 
-
-@bot.on_message(
-    filters.command("deltoken", prefixes=["/", ".", "?", "-"])
-    & filters.private)
-async def token(client, message):
-    leveldb = MongoClient(MONGO_URL)    
-    toggle = leveldb["myFirstDatabase"]["jsons"]
-    user = leveldb["Kukiapi"]["user"]
-    key = leveldb["Kukiapi"]["api"]
-    chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    chars1="1234564890"
-    gen1 = random.choice(chars)
-    gen2 = random.choice(chars)
-    gen3 = random.choice(chars1)
-    gen4 = random.choice(chars)
-    gen5 = random.choice(chars)
-    gen6 = random.choice(chars)
-    gen7 = random.choice(chars1)
-    gen8 = random.choice(chars)
-    gen9 = random.choice(chars)
-    gen10 = random.choice(chars1)
-    word = f"KUKI{gen1}{gen2}{gen3}{gen4}{gen5}{gen6}{gen7}{gen8}{gen9}{gen10}"
-    is_user = user.find_one({"user_id": message.from_user.id})
-    KukiAPI = is_user["API"]
-    if is_user:
-        toggle.delete_one({"ID": KukiAPI, "data": KukiAPI})
-        user.delete_one({"user_id": message.from_user.id, "API": KukiAPI})
-        await message.reply_text(f"Your Kuki API: `{KukiAPI}` Do not give this token to anyone else!\n Join @MetaVoidSupport")
-    else:
-        await message.reply_text("Please First Press /token")
-
-
-
-@bot.on_message(
     filters.command("setupchat", prefixes=["/", ".", "?", "-"])
     & ~filters.private)
 async def addchat(_, message): 
@@ -110,7 +47,7 @@ async def addchat(_, message):
             )
     is_kuki = kuki.find_one({"chat_id": message.chat.id})
     if not is_kuki:
-        toggle.insert_one({"chat_id": message.chat.id})
+        kuki.insert_one({"chat_id": message.chat.id})
         await message.reply_text(f"✅ | Successfully\nKuki Chatbot of this Group is set to @{message.chat.username}\n Requested by [{message.from_user.first_name}](tg://user?id={message.from_user.id})\n© @MetaVoid")
     else:
         await message.reply_text(f"Already Setup Kuki Chatbot of this Group Is @{message.chat.username}")
