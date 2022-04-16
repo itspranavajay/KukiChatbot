@@ -10,6 +10,7 @@ API_ID = os.environ.get("API_ID", None)
 API_HASH = os.environ.get("API_HASH", None) 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", None) 
 KUKI_API = os.environ.get("KUKI_API", None) 
+ERROR_LOG = os.environ.get("ERROR_LOG", None) 
 MONGO_URL = os.environ.get("MONGO_URL", None)
 
 
@@ -77,6 +78,9 @@ async def rmchat(_, message):
         await message.reply_text("✅ | Kuki Chatbot is disable!")
 
 
+
+
+
 @bot.on_message(
     filters.text
     & filters.reply
@@ -86,61 +90,81 @@ async def rmchat(_, message):
     group=2,
 )
 async def kukiai(client: Client, message: Message):
-  msg = message.text
-  chat_id = message.chat.id
 
-  kukidb = MongoClient(MONGO_URL)
+   kukidb = MongoClient(MONGO_URL)
     
-  kuki = kukidb["KukiDb"]["Kuki"] 
+   kuki = kukidb["KukiDb"]["Kuki"] 
 
-  is_kuki = kuki.find_one({"chat_id": message.chat.id})
-  if is_kuki:
-
-      Kuki =   requests.get(f"https://kukiapi.xyz/api/apikey={KUKI_API}/message={msg}").json()
-
-      moezilla = f"{Kuki['reply']}"
-
-      self = await bot.get_me()
-      bot_id = self.id
-      if not message.reply_to_message.from_user.id == bot_id:
-          return
-      
-      await client.send_chat_action(message.chat.id, "typing")
-      await message.reply_text(moezilla)
+   is_kuki = kuki.find_one({"chat_id": message.chat.id})
+   if is_kuki:
+       if message.reply_to_message:      
+           botget = await bot.get_me()
+           botid = botget.id
+           if not message.reply_to_message.from_user.id == botid:
+               return
+           await bot.send_chat_action(message.chat.id, "typing")
+           if not message.text:
+               msg = "/"
+           else:
+               msg = message.text
+           try: 
+               x = requests.get(f"https://kukiapi.xyz/api/apikey={KUKI_API}/message={msg}").json()
+               x = x['reply']
+               await asyncio.sleep(1)
+           except Exception as e:
+               error = str(e)
+           await message.reply_text(x)
+           await bot.send_message(
+           ERROR_LOG, f"""{error}""")
+           await bot.send_chat_action(message.chat.id, "cencel") 
+   
 
 
 @bot.on_message(
     filters.text
-    & ~filters.reply
+    & filters.reply
     & filters.private
     & ~filters.bot
     & ~filters.edited,
     group=2,
 )
 async def kukiai(client: Client, message: Message):
-  msg = message.text
-  chat_id = message.chat.id
+    await bot.send_chat_action(message.chat.id, "typing")
+    if not message.text:
+        msg = "/"
+    else:
+        msg = message.text
+    try:
+        x = requests.get(f"https://kukiapi.xyz/api/apikey={KUKI_API}/message={msg}").json()
+        x = x['reply']
+        await asyncio.sleep(1)
+    except Exception as e:
+        ERROR = str(e)
+    await message.reply_text(x)
+    await bot.send_message(
+           ERROR_LOG, f"""{ERROR}""")
+    await bot.send_chat_action(message.chat.id, "cancel")
 
-  Kuki =   requests.get(f"https://kukiapi.xyz/api/apikey={KUKI_API}/message={msg}").json()
-
-  moezilla = f"{Kuki['reply']}"
-      
-  await client.send_chat_action(message.chat.id, "typing")
-  await message.reply_text(moezilla)
 
 
 @bot.on_message(
     filters.command("chat", prefixes=["/", ".", "?", "-"]))
 async def kukiai(client: Client, message: Message):
-
-  msg = message.text.replace(message.text.split(" ")[0], "")
+    await bot.send_chat_action(message.chat.id, "typing")
+    if not message.text:
+        msg = "/"
+    else:
+        msg = message.text.replace(message.text.split(" ")[0], "")
+    try:
+        x = requests.get(f"https://kukiapi.xyz/api/apikey={KUKI_API}/message={msg}").json()
+        x = x['reply']
+        await asyncio.sleep(1)
+    except Exception as e:
+        ERROR = str(e)
+    await bot.send_message(
+           ERROR_LOG, f"""{ERROR}""")
+    await message.reply_text(x)
     
-  Kuki =   requests.get(f"https://kukiapi.xyz/api/apikey={KUKI_API}/message={msg}").json()
-
-  moezilla = f"{Kuki['reply']}"
-      
-  await client.send_chat_action(message.chat.id, "typing")
-  await message.reply_text(moezilla)
 
 
 
