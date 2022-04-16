@@ -12,6 +12,10 @@
             "description": "join @metavoidsupport",
             "required": true
         },
+        "ERROR_LOG": {
+            "description": "error channel log id",
+            "required": true
+        },
         "MONGO_URL": {
             "description": "mongo db url here",
             "required": true
