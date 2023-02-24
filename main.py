@@ -35,8 +35,8 @@ async def is_admins(chat_id: int):
     & ~filters.private)
 async def addchat(_, message): 
     kukidb = MongoClient(MONGO_URL)
-    
-    kuki = kukidb["KukiDb"]["Kuki"] 
+
+    kuki = kukidb["KukiDb"]["Kuki"]
     if message.from_user:
         user = message.from_user.id
         chat_id = message.chat.id
@@ -46,12 +46,11 @@ async def addchat(_, message):
             return await message.reply_text(
                 "You are not admin"
             )
-    is_kuki = kuki.find_one({"chat_id": message.chat.id})
-    if not is_kuki:
+    if is_kuki := kuki.find_one({"chat_id": message.chat.id}):
+        await message.reply_text(f"Already Setup Kuki Chatbot of this Group Is @{message.chat.username}")
+    else:
         kuki.insert_one({"chat_id": message.chat.id})
         await message.reply_text(f"✅ | Successfully\nKuki Chatbot of this Group is set to @{message.chat.username}\n Requested by [{message.from_user.first_name}](tg://user?id={message.from_user.id})\n© @MetaVoid")
-    else:
-        await message.reply_text(f"Already Setup Kuki Chatbot of this Group Is @{message.chat.username}")
 
 
 @bot.on_message(
@@ -59,8 +58,8 @@ async def addchat(_, message):
     & ~filters.private)
 async def rmchat(_, message): 
     kukidb = MongoClient(MONGO_URL)
-    
-    kuki = kukidb["KukiDb"]["Kuki"] 
+
+    kuki = kukidb["KukiDb"]["Kuki"]
     if message.from_user:
         user = message.from_user.id
         chat_id = message.chat.id
@@ -70,12 +69,11 @@ async def rmchat(_, message):
             return await message.reply_text(
                 "You are not admin"
             )
-    is_kuki = kuki.find_one({"chat_id": message.chat.id})
-    if not is_kuki:
-        await message.reply_text("Already Kuki ChatBot Disable")
-    else:
+    if is_kuki := kuki.find_one({"chat_id": message.chat.id}):
         kuki.delete_one({"chat_id": message.chat.id})
         await message.reply_text("✅ | Kuki Chatbot is disable!")
+    else:
+        await message.reply_text("Already Kuki ChatBot Disable")
 
 
 
@@ -91,32 +89,28 @@ async def rmchat(_, message):
 )
 async def kukiai(client: Client, message: Message):
 
-   kukidb = MongoClient(MONGO_URL)
-    
-   kuki = kukidb["KukiDb"]["Kuki"] 
+    kukidb = MongoClient(MONGO_URL)
 
-   is_kuki = kuki.find_one({"chat_id": message.chat.id})
-   if is_kuki:
-       if message.reply_to_message:      
-           botget = await bot.get_me()
-           botid = botget.id
-           if not message.reply_to_message.from_user.id == botid:
-               return
-           await bot.send_chat_action(message.chat.id, "typing")
-           if not message.text:
-               msg = "/"
-           else:
-               msg = message.text
-           try: 
-               x = requests.get(f"https://kukiapi.xyz/api/apikey={KUKI_API}/message={msg}").json()
-               x = x['reply']
-               await asyncio.sleep(1)
-           except Exception as e:
-               error = str(e)
-           await message.reply_text(x)
-           await bot.send_message(
-           ERROR_LOG, f"""{error}""")
-           await bot.send_chat_action(message.chat.id, "cencel") 
+    kuki = kukidb["KukiDb"]["Kuki"] 
+
+    if is_kuki := kuki.find_one({"chat_id": message.chat.id}):
+        if message.reply_to_message:      
+            botget = await bot.get_me()
+            botid = botget.id
+            if message.reply_to_message.from_user.id != botid:
+                return
+            await bot.send_chat_action(message.chat.id, "typing")
+            msg = message.text or "/"
+            try: 
+                x = requests.get(f"https://kukiapi.xyz/api/apikey={KUKI_API}/message={msg}").json()
+                x = x['reply']
+                await asyncio.sleep(1)
+            except Exception as e:
+                error = str(e)
+            await message.reply_text(x)
+            await bot.send_message(
+            ERROR_LOG, f"""{error}""")
+            await bot.send_chat_action(message.chat.id, "cencel") 
    
 
 
@@ -130,10 +124,7 @@ async def kukiai(client: Client, message: Message):
 )
 async def kukiai(client: Client, message: Message):
     await bot.send_chat_action(message.chat.id, "typing")
-    if not message.text:
-        msg = "/"
-    else:
-        msg = message.text
+    msg = message.text or "/"
     try:
         x = requests.get(f"https://kukiapi.xyz/api/apikey={KUKI_API}/message={msg}").json()
         x = x['reply']
@@ -151,10 +142,12 @@ async def kukiai(client: Client, message: Message):
     filters.command("chat", prefixes=["/", ".", "?", "-"]))
 async def kukiai(client: Client, message: Message):
     await bot.send_chat_action(message.chat.id, "typing")
-    if not message.text:
-        msg = "/"
-    else:
-        msg = message.text.replace(message.text.split(" ")[0], "")
+    msg = (
+        message.text.replace(message.text.split(" ")[0], "")
+        if message.text
+        else "/"
+    )
+
     try:
         x = requests.get(f"https://kukiapi.xyz/api/apikey={KUKI_API}/message={msg}").json()
         x = x['reply']
@@ -176,11 +169,18 @@ async def start(client, message):
     busername = self.username
     if message.chat.type != "private":
         buttons = InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text="Click here",
-                url=f"t.me/kukichatbot?start")]])
+            [
+                [
+                    InlineKeyboardButton(
+                        text="Click here", url="t.me/kukichatbot?start"
+                    )
+                ]
+            ]
+        )
+
         await message.reply("Contact me in PM",
                             reply_markup=buttons)
-        
+
     else:
         buttons = [[InlineKeyboardButton("Support", url="https://t.me/metavoidsupport"),
                     InlineKeyboardButton("Channel", url="https://t.me/metavoid"),
@@ -197,11 +197,18 @@ async def help(client, message):
     busername = self.username
     if message.chat.type != "private":
         buttons = InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text="Click here",
-                url=f"t.me/kukichatbot?start=help_")]])
+            [
+                [
+                    InlineKeyboardButton(
+                        text="Click here", url="t.me/kukichatbot?start=help_"
+                    )
+                ]
+            ]
+        )
+
         await message.reply("Contact me in PM",
                             reply_markup=buttons)
-        
+
     else:    
         await message.reply_text("/start - Start The Bot\n/chat - Send a message to this bot\n/setupchat - Active Kuki Chatbot In Group\n/removechat - Disable Kuki Chatbot In Group")
 
